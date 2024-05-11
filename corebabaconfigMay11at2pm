@@ -1,0 +1,253 @@
+
+!
+! Last configuration change at 05:07:58 UTC Mon Mar 1 1993
+!
+version 15.0
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname CoreBaba21
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no logging console
+enable secret 5 $1$.cdH$rCtJpR/gyVZJ7aFeEfWEE0
+!
+username admin privilege 15 secret 5 $1$581Q$LejTMw9GHUZs4JkkFCqMz0
+username admin2 privilege 15 secret 5 $1$z/uB$PuKLUYN.UdCk.pdGCD6qz1
+no aaa new-model
+system mtu routing 1500
+ip routing
+ip domain-name encor21.com
+ip name-server 10.21.1.10
+!
+ip dhcp excluded-address 10.21.1.1 10.21.1.100
+ip dhcp excluded-address 10.21.10.1 10.21.10.100
+ip dhcp excluded-address 10.21.50.1 10.21.50.100
+ip dhcp excluded-address 10.21.100.1 10.21.100.100
+!
+ip dhcp pool MGMTDATA
+ network 10.21.1.0 255.255.255.0
+ default-router 10.21.1.4 
+ domain-name MGMTDATA.COM
+ dns-server 10.21.1.10 
+!
+ip dhcp pool WIFIDATA
+ network 10.21.10.0 255.255.255.0
+ default-router 10.21.10.4 
+ domain-name WIFIDATA.COM
+ dns-server 10.21.1.10 
+!
+ip dhcp pool IPCCTV
+ network 10.21.50.0 255.255.255.0
+ default-router 10.21.50.4 
+ domain-name IPCCTV.COM
+ dns-server 10.21.1.10 
+!
+ip dhcp pool VOICEVLAN
+ network 10.21.100.0 255.255.255.0
+ default-router 10.21.100.4 
+ domain-name VOICEVLAN.COM
+ dns-server 10.21.1.10 
+ option 150 ip 10.21.100.8 
+!
+ip dhcp pool cameraport6
+!
+ip dhcp pool CAMERAPORT6
+ host 10.12.50.6 255.255.255.0
+ client-identifier 001a.0709.c252
+!
+ip dhcp pool CAMERAPORT8
+ host 10.12.50.8 255.255.255.0
+ client-identifier 001a.0704.7f64
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-890118528
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-890118528
+ revocation-check none
+ rsakeypair TP-self-signed-890118528
+!
+!
+crypto pki certificate chain TP-self-signed-890118528
+ certificate self-signed 01
+  30820229 30820192 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  30312E30 2C060355 04031325 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 38393031 31383532 38301E17 0D393330 33303130 30303131 
+  365A170D 32303031 30313030 30303030 5A303031 2E302C06 03550403 1325494F 
+  532D5365 6C662D53 69676E65 642D4365 72746966 69636174 652D3839 30313138 
+  35323830 819F300D 06092A86 4886F70D 01010105 0003818D 00308189 02818100 
+  9AAC40FF E7321347 606C8A50 BE36495D 01364B61 890BAA6F 549ACF6B F004D679 
+  70B22DE3 815840F3 A0279724 11684DC4 CE889BD2 0188E9B0 C5FFD448 D5FFFC9E 
+  F816E90E 3A95EC57 1E95BBFD 78301692 6E217F4A 0A20517E B0099633 8A956B0F 
+  C648CB34 888AF93D 9CE20D87 47B1E529 EC14CBC6 B649FED7 1CEF6CB3 4BD1007F 
+  02030100 01A35330 51300F06 03551D13 0101FF04 05300301 01FF301F 0603551D 
+  23041830 1680145A 60A8484B F66BC6FE 5C4C4A8B D6BCE1CA 40208D30 1D060355 
+  1D0E0416 04145A60 A8484BF6 6BC6FE5C 4C4A8BD6 BCE1CA40 208D300D 06092A86 
+  4886F70D 01010505 00038181 00841480 C3BDC3A7 47FDA17B 31B44C0A 6D135C58 
+  0F886B22 886B648C 484C1569 02BA8D52 CD713ECF 2B1248BB 91861DB8 169AD9A1 
+  158163EB 927FDE0E 8415CF25 D693B452 FCC6BCEB 71669C03 62F8E405 F318EAD3 
+  0BC58059 8A5EDA81 0EA49FA6 75CF60C2 A539D35A 745BDBFF 8F3AC3A2 9D5D1B40 
+  B4561334 4AF7F93D 4997660E 1F
+  	quit
+!
+!
+!
+!
+!
+!
+spanning-tree mode mst
+spanning-tree portfast bpduguard default
+spanning-tree extend system-id
+spanning-tree uplinkfast
+!
+spanning-tree mst configuration
+ name supermanstp
+ revision 1
+ instance 1 vlan 11-19
+ instance 2 vlan 21-29
+ instance 3 vlan 31-39
+!
+spanning-tree mst 0,2 priority 28672
+spanning-tree mst 1,3 priority 24576
+spanning-tree vlan 1-100 priority 28672
+!
+vlan internal allocation policy ascending
+!
+ip ssh version 2
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Port-channel1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface FastEthernet0/1
+ spanning-tree portfast
+!
+interface FastEthernet0/2
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/3
+ switchport access vlan 100
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/4
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/5
+ switchport access vlan 100
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/6
+ switchport access vlan 50
+ switchport mode access
+ switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 001a.0704.7f64
+ spanning-tree portfast
+!
+interface FastEthernet0/7
+ switchport access vlan 100
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/8
+ switchport access vlan 50
+ switchport mode access
+ switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 001a.0709.c252
+ spanning-tree portfast
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 1 mode active
+!
+interface FastEthernet0/11
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 1 mode active
+!
+interface FastEthernet0/12
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 1 mode active
+!
+interface GigabitEthernet0/1
+ no switchport
+ ip address 10.21.21.4 255.255.255.0
+!
+interface Vlan1
+ description MGMTDATA
+ ip address 10.21.1.4 255.255.255.0
+ standby 1 ip 10.21.1.6
+ standby 1 priority 150
+ standby 1 preempt
+!
+interface Vlan10
+ description WIRELESS
+ ip address 10.21.10.4 255.255.255.0
+!
+interface Vlan50
+ description IPCCTV
+ ip address 10.21.50.4 255.255.255.0
+!
+interface Vlan100
+ description VOICEVLAN
+ ip address 10.21.100.4 255.255.255.0
+!
+router ospf 1
+ router-id 10.21.1.4
+ network 10.21.0.0 0.0.255.255 area 21
+!
+ip http server
+ip http secure-server
+!
+!
+ip route 0.0.0.0 0.0.0.0 10.21.21.1
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+line vty 0 4
+ exec-timeout 0 0
+ no login
+ transport input all
+line vty 5 14
+ exec-timeout 0 0
+ no login
+ transport input all
+line vty 15
+ login
+!
+end
