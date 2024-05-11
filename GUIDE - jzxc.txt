@@ -1,0 +1,174 @@
+HSRP  - hot standby routing protocol <---
+core taas  <---backup
+int vlan 1 
+ standby 1 ip 10.21.1.6
+ standby 1 priority 100
+ standby 1 preempt
+
+
+core baba < -- primary internet
+
+int vlan 1
+ standby 1 ip 10.21.1.6
+ standby 1 priority 150
+ standby 1 preempt
+
+----------------------
+
+check , ts
+
+1. terminal monitor
+2. debug standby
+
+
+negate monitor 
+
+un all
+
+
+sh run | section ospf 
+-----------------------
+
+
+TASK 7: multi area OSPF config.
+
+edge, coretaas , corebaba and cucum:
+
+@coretaas
+
+ip routing
+router ospf 1
+router-id 10.21.1.2
+network 10.21.1.0. 0.0.255.255 area 21
+
+@corebaba
+
+ip routing
+router ospf 1
+router-id 10.21.1.4
+network 10.21.1.0 0.0.255.255 area 21
+
+@cucum
+
+ip routing
+router ospf 1
+router-id 10.21.100.8
+network 10.21.100.0 0.0.255.255 area 21
+
+@edge
+router ospf 1
+router-id 21.0.0.1
+network 200.0.0.0 0.0.0.255 area 0
+network 10.21.21.0 0.0.0.255 area 21
+network 21.0.0.1 0.0.0.0 area 0
+
+
+reserve a mac address
+50    001a.0704.7f64    DYNAMIC     Fa0/8
+50    001a.0709.c252    DYNAMIC     Fa0/6
+
+
+ip dhcp pool CAMERAPORT6
+ host 10.12.50.6 255.255.255.0
+ client-identifier 001a.0709.c252
+
+
+ip dhcp pool CAMERAPORT8
+ host 10.12.50.8 255.255.255.0
+ client-identifier001a.0704.7f64
+
+
+CCNP - important DNS record
+
+
+TASK 9 : Cisco and DNS integration
+
+#creating all important zones:
+add-DnsServerResourceRecord -zonename encor21.com -A -name ns -ipv4address 10.21.1.10
+add-DnsServerResourceRecord -zonename encor21.com -A -name ct -ipv4address 10.21.1.2
+add-DnsServerResourceRecord -zonename encor21.com -A -name cb -ipv4address 10.21.1.4
+add-DnsServerResourceRecord -zonename encor21.com -A -name ed -ipv4address 10.21.21.1
+add-DnsServerResourceRecord -zonename encor21.com -A -name cm -ipv4address 10.21.100.8
+add-DnsServerResourceRecord -zonename encor21.com -A -name c1 -ipv4address 10.21.50.6
+add-DnsServerResourceRecord -zonename encor21.com -A -name c2 -ipv4address 10.21.50.8
+add-DnsServerResourceRecord -zonename encor21.com -A -name p1 -ipv4address 10.21.100.101
+add-DnsServerResourceRecord -zonename encor21.com -A -name p2 -ipv4address 10.21.100.102
+add-DnsServerResourceRecord -zonename encor21.com -A -name wc -ipv4address 10.21.10.3
+
+
+# have Cisco and DNS talk to each other
+
+ip domain-lookup
+ip domain-name ex. sumisho.com.ph
+ip name-server ex. 192.168.143.160
+
+to reset Cisco controller <-- Reset-Config
+
+TSK 10 WLC configuration. with mac 01.01 <- controller and connect via https
+
+TASK 11: Cisco Storage and backup Services:
+Integrate Cisco and FTP Services:
+
+powershell
+Install-WindowsFeature -name Web-ftp-server -includeAllSubFeature
+Install-WindowsFeature -name web-ftp-server -IncludeManagementTools
+
+Install-WindowsFeature -name web-server -IncludeAllSubFeature
+Install-WindowsFeature -name web-server -IncludeManagementTools
+
+TASK 12: cisco storage
+
+- how to open file in cisco file storage
+  > MORE flash: ( file name )
+ to show file name
+
+  > sh flash: | inc .(file extension 
+
+
+
+Task 13
+hackable bit 
+
+32k
+24k
+
+
+enable spanning-tree mode pvst
+
+spanning-tree mode pvst
+spanning-tree vlan 1-x primary
+
+Task 14- enhancement
+
+Core taas
+spanning-tree mode Rapid-Pvst
+spanning-tree Backbonefast
+spanning-tree portfast bpduguard default
+
+int range fa0/1-8
+ spanning-tree portfast
+Core baba
+spanning-tree mode Rapid-Pvst
+spanning-tree uplinkfast
+spanning-tree portfast bpduguard default
+
+
+
+Task 15: MASTER ENCOR LABS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
