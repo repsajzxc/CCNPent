@@ -1,0 +1,183 @@
+
+!
+! Last configuration change at 01:17:58 UTC Mon Mar 1 1993
+!
+version 15.0
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname corebaba21
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no logging console
+!
+no aaa new-model
+system mtu routing 1500
+ip routing
+!
+ip dhcp excluded-address 10.21.1.1 10.21.1.100
+ip dhcp excluded-address 10.21.10.1 10.21.10.100
+ip dhcp excluded-address 10.21.50.1 10.21.50.100
+ip dhcp excluded-address 10.21.100.1 10.21.100.100
+!
+ip dhcp pool MGMTDATA
+ network 10.21.1.0 255.255.255.0
+ default-router 10.21.1.4 
+ domain-name MGMTDATA.COM
+ dns-server 10.21.1.10 
+!
+ip dhcp pool WIFIDATA
+ network 10.21.10.0 255.255.255.0
+ default-router 10.21.10.4 
+ domain-name WIFIDATA.COM
+ dns-server 10.21.1.10 
+!
+ip dhcp pool IPCCTV
+ network 10.21.50.0 255.255.255.0
+ default-router 10.21.50.4 
+ domain-name IPCCTV.COM
+ dns-server 10.21.1.10 
+!
+ip dhcp pool VOICEVLAN
+ network 10.21.100.0 255.255.255.0
+ default-router 10.21.100.4 
+ domain-name VOICEVLAN.COM
+ dns-server 10.21.1.10 
+ option 150 ip 10.21.100.8 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode rapid-pvst
+spanning-tree portfast bpduguard default
+spanning-tree extend system-id
+spanning-tree uplinkfast
+spanning-tree vlan 1-100 priority 28672
+!
+vlan internal allocation policy ascending
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Port-channel1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface FastEthernet0/1
+ spanning-tree portfast
+!
+interface FastEthernet0/2
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/3
+ switchport access vlan 100
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/4
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/5
+ switchport access vlan 100
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/6
+ switchport access vlan 50
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/7
+ switchport access vlan 100
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/8
+ switchport access vlan 50
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 1 mode active
+!
+interface FastEthernet0/11
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 1 mode active
+!
+interface FastEthernet0/12
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 1 mode active
+!
+interface GigabitEthernet0/1
+ no switchport
+ ip address 10.21.21.4 255.255.255.0
+!
+interface Vlan1
+ description MGMTDATA
+ ip address 10.21.1.4 255.255.255.0
+!
+interface Vlan10
+ description WIRELESS
+ ip address 10.21.10.4 255.255.255.0
+!
+interface Vlan50
+ description IPCCTV
+ ip address 10.21.50.4 255.255.255.0
+!
+interface Vlan100
+ description VOICEVLAN
+ ip address 10.21.100.4 255.255.255.0
+!
+router ospf 1
+ router-id 10.21.1.4
+ network 10.21.0.0 0.0.255.255 area 21
+!
+ip http server
+ip http secure-server
+!
+!
+ip route 0.0.0.0 0.0.0.0 10.21.21.1
+!
+!
+!
+!
+line con 0
+line vty 5 15
+!
+end

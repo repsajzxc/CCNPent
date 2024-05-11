@@ -1,0 +1,120 @@
+
+!
+version 12.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname CoreTaas21
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+!
+no aaa new-model
+system mtu routing 1500
+ip routing
+!
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode rapid-pvst
+spanning-tree portfast bpduguard default
+spanning-tree extend system-id
+spanning-tree backbonefast
+spanning-tree vlan 1-100 priority 24576
+!
+vlan internal allocation policy ascending
+!
+!
+!
+interface Port-channel1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface FastEthernet0/1
+ spanning-tree portfast
+!
+interface FastEthernet0/2
+ spanning-tree portfast
+!
+interface FastEthernet0/3
+ spanning-tree portfast
+!
+interface FastEthernet0/4
+ spanning-tree portfast
+!
+interface FastEthernet0/5
+ spanning-tree portfast
+!
+interface FastEthernet0/6
+ spanning-tree portfast
+!
+interface FastEthernet0/7
+ spanning-tree portfast
+!
+interface FastEthernet0/8
+ spanning-tree portfast
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 1 mode active
+!
+interface FastEthernet0/11
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 1 mode active
+!
+interface FastEthernet0/12
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 1 mode active
+!
+interface GigabitEthernet0/1
+!
+interface Vlan1
+ description MGMTDATA
+ ip address 10.21.1.2 255.255.255.0
+!
+interface Vlan10
+ description WIRELESS
+ ip address 10.21.10.2 255.255.255.0
+!
+interface Vlan50
+ description IPCCTV
+ ip address 10.21.50.2 255.255.255.0
+!
+interface Vlan100
+ description VOICEVLAN
+ ip address 10.21.100.2 255.255.255.0
+!
+router ospf 1
+ router-id 10.21.1.2
+ log-adjacency-changes
+ network 10.21.0.0 0.0.255.255 area 21
+!
+ip classless
+ip http server
+ip http secure-server
+!
+!
+vstack
+!
+line con 0
+line vty 5 15
+!
+end
