@@ -1,0 +1,33 @@
+sdwan-july:
+
+1. root/ C1sc0123
+
+http:
+
+admin
+eve
+
+step2:
+start cloud, 
+config t
+hostname SDcloud
+int f1/0
+ no switchport
+ no shut
+ ip add 192.168.1.26 255.255.255.0
+Int vlan 1
+ no shut 
+ ip add 100.0.0.254 255.255.255.0
+end
+
+
+viptela:
+admin/admin
+
+vtmgnt:
+
+root
+
+
+
+Password123!

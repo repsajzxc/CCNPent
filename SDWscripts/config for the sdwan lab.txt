@@ -1,0 +1,317 @@
+feature templates
+
+1. System
+In vManage, Navigate to Configuration ? Templates ? Feature ? vEdge Cloud ? Basic
+Information ? System
+- Configure the System parameters based on the following:
+o Template Name: VE-System
+o Description: VE-System
+o Site ID ? Device Specific
+o System IP ? Device Specific
+o Hostname ? Device Specific
+o Console Baud Rate ? 9600
+
+
+task#2:
+Configure the Banner Template to be used by all vEdgeCloud Devices
+- In vManage, Navigate to Configuration ? Templates ? Feature ? vEdge Cloud ? OTHER
+TEMPLETES ? Banner
+- Configure the Banner parameters based on the following:
+o Template Name : VE-Banner
+o Description : VE-Banner
+o Login Banner: RIVAN Authorized Users Only !!!
+o MOTD: Welcome To SD-WAN !!!
+
+
+TASK#3:
+Configure a VPN Template to be used by all Branch vEdgeCloud Devices for VPN 0
+- In vManage, Navigate to Configuration ? Templates ? Feature ? vEdge Cloud ? VPN ? VPN
+- Configure the VPN parameters based on the following:
+o Template Name: BR-VE-VPN-VPN0
+o Description: BR-VE-VPN-VPN0
+Basic Configuration
+o VPN ? Global: 0
+o Name ? Global: Transport VPN
+IPv4 Route
+o Prefix ? Global: 0.0.0.0/0
+o Next Hop ? Device Specific
+- Click Save to save the Template.
+- Click Save to save the Template.
+
+TASK#4:
+Configure a VPN Template to be used by all Branch vEdgeCloud Devices for VPN
+512
+- In vManage, Navigate to Configuration ? Templates ? Feature ? vEdge Cloud ? VPN ?
+VPN
+- Configure the VPN parameters based on the following:
+o Template Name: BR-VE-VPN-VPN512
+o Description: BR-VE-VPN-VPN512
+Basic Configuration
+o VPN ? Global: 512
+o Name ? Global: MGMT VPN
+- Click Save to save the Template.
+
+
+
+TASK#5:
+Configure a VPN Interface Template to be used by all Branch vEdge-Cloud
+Devices for VPN 0 for Interface G0/0
+- In vManage, Navigate to Configuration ? Templates ? Feature ? vEdge Cloud ? VPN ? VPN
+Interface Ethernet
+- Configure the VPN parameters based on the following:
+o Template Name: BR-VE-VPNINT-VPN0-G0
+o Description: BR-VE-VPNINT-VPN0-G0
+Basic Configuration
+o Shutdown ? Global: No
+o Interface Name ? Global: Ge0/0
+o IPv4 Address ? Static ? Device specific
+Tunnel
+o Tunnel Inteface ? Global: On
+o Color ? Global: biz-internet
+Allow Service
+o All ? Global: On
+NETCONF ? Global: On
+o SSH ? Global: On
+- Click Save to save the Template.
+
+
+TAsk#6:
+Configure a VPN Interface Template to be used by all Branch vEdge-Cloud
+Devices for VPN 512 for Interface Eth0
+- In vManage, Navigate to Configuration ? Templates ? Feature ? vEdge Cloud ? VPN ? VPN
+Interface Ethernet
+- Configure the VPN parameters based on the following:
+o Template Name: BR-VE-VPNINT-VPN512-Eth0
+o Description: BR-VE-VPNINT-VPN512-Eth0
+Basic Configuration
+o Shutdown -> Global: No
+o Interface Name -> Global: Eth0
+o IPv4 Address -> Dynamic
+- Click Save to save the Template
+
+task#7:
+Configure a BGP Template to be used by BR vEdge-Cloud Devices for VPN 0
+- In vManage, Navigate to Configuration ? Templates ? Feature ? vEdge Cloud ? Other
+Templates ? BGP
+- Configure the BGP parameters based on the following:
+o Template Name: BR-VE-BGP-VPN0
+o Description: BR-VE-BGP-VPN0
+- Basic Configuration
+o Shutdown ? Global: No
+o AS Number ? Global: 65001
+- Neighbor
+o Address ? Global: 100.0.0.254
+o Remote AS ? Global: 65001
+o Address Family ? Global: On
+o Address Family ? Global: IPv4-Unicast
+- Click Add to add the Interface and Click Add to add BGP Neighbor.
+- Click Save to save the Template.
+
+
+
+
+task#8:
+Configuring and Deploying Device Templates for vEdge – Branch
+Site(vEdge2)
+Task 1 – Configure a Device Template for Branch vEdge Devices.
+- In vManage, Navigate to Configuration ? Templates ? Device ? Create Template ? vEdge
+Cloud
+- Configure the Device Template based on the following:
+o Template Name: BR-VE-TEMP
+o Description: BR-VE-TEMP
+Basic Information
+o System ? VE-System
+Transport & Management
+o VPN 0: BR-VE-VPN-VPN0
+o VPN Interface: BR-VE-VPNINT-VPN0-G0
+o BGP: BE-VE-BGP-VPN0
+o VPN 512: BR-VE-VPN-VPN512
+o VPN Interface: BR-VE-VPNINT-VPN512-Eth0
+- Click Create to save the Template.
+
+
+
+Configuring Feature Templates –Service VPN – VPN, VPN
+Interface and Internal Routing – Branch Site (vEdges)
+Task 1 - Configure a VPN Template to be used by all Branch vEdgeCloud Devices for VPN1
+- In vManage, Navigate to Configuration ? Templates ? Feature ? vEdge Cloud ? VPN ?VPN
+- Configure the VPN parameters based on the following:
+o Template Name: BR-VE-VPN-VPN1
+o Description: BR-VE-VPN-VPN1
+Basic Configuration
+o VPN ? Global: 1
+o Name ? Global: Data VPN
+- Click Save to save the Template.
+
+
+Task 2 – Configure a VPN Interface Template to be used by all Branch vEdge-Cloud
+devices for VPN 1 for Interface G0/1
+- In vManage, Navigate to Configuration ? Templates ? Feature ? vEdge Cloud ? VPN ?
+VPN Interface Ethernet
+- Configure the VPN parameters based on the following:
+o Template Name: BR-VE-VPNINT-VPN1-G1
+o Description: BR-VE-VPNINT-VPN1-G1
+Basic Configuration
+o Shutdown ? Global: No
+o Interface Name ? Global: Ge0/1
+o IPv4 Address ? Static ? Device Specific
+- Click Save to save the Template.
+
+
+Task 3 – Configure a OSPF Template to be used by all Branch vEdgeCloud Devices for VPN
+1
+- In vManage, Navigate to Configuration ? Templates ? Feature ? vEdge Cloud ? Other
+Templates ? OSPF
+- Configure the OSPF parameters based on the following:
+o Template Name: BR-VE-OSPF-VPN1
+o Description: BR-VE-OSPF-VPN1
+Redistribution
+o Protocol: OMP
+- Area Configuration
+o Area Number ? Global : 0
+o Area Type ? Default
+Interface Configuration
+o Interface Name: Ge0/1
+- Click Add to add the Interface and Click Add to add OSPF.
+- Click Save to save the Template.
+
+Implementing a Service VPN using Templates – Branch Site
+(vEdge2)
+Task 1 – Edit the BR-VE-TEMP Device Template for Branch vEdge Devices.
+- In vManage, Navigate to Configuration ? Templates ? Device ? BRVE-TEMP ? “…” ? Edit
+- Edit the BR-VE-TEMP Device Template based on the following:
+Service VPN
+o VPN 1: BR-VE-VPN-VPN1
+o VPN Interface: BR-VE-VPNINT-VPN1-G1
+o OSPF: BR-VE-OSPF-VPN1
+- Click Save to save the Template
+
+
+
+Routing
+Cloud/3725:
+conf t
+int lo0
+ip address 8.8.8.8 255.255.255.255
+exit
+router bgp 65001
+ no synchronization
+ bgp log-neighbor-changes
+ network 8.8.8.8 mask 255.255.255.255
+ network 100.0.0.0 mask 255.255.255.0
+ neighbor 100.0.0.107 remote-as 65001
+ neighbor 100.0.0.109 remote-as 65001
+ neighbor 100.0.0.111 remote-as 65001
+ no auto-summary
+
+Site1:
+conf t
+	hostname Site1
+	no ip domain lookup
+	int fa0/0
+		no shut
+		ip address 172.16.10.2 255.255.255.0
+		exit
+	int lo 0
+		no shut
+		ip address 1.1.1.1 255.255.255.255
+		exit
+	end
+wr
+
+
+
+	router ospf 1
+		network 172.16.10.0 0.0.0.255 area 0
+		network 1.1.1.1 0.0.0.0 area 0
+Site2:
+conf t
+	hostname Site2
+	no ip domain lookup
+	int fa0/0
+		no shut
+		ip address 172.16.20.2 255.255.255.0
+		exit
+	int lo 0
+		no shut
+		ip address 2.2.2.2 255.255.255.255
+		exit
+	END
+
+wr
+
+
+
+	router ospf 1
+		network 172.16.20.0 0.0.0.255 area 0
+		network 2.2.2.2 0.0.0.0 area 0
+Site3:
+conf t
+	hostname Site3
+	no ip domain lookup
+	int fa0/0
+		no shut
+		ip address 172.16.30.2 255.255.255.0
+		exit
+	int lo 0
+		no shut
+		ip address 3.3.3.3 255.255.255.255
+		exit
+	end
+wr
+
+
+
+	router ospf 1
+		network 172.16.30.0 0.0.0.255 area 0
+		network 3.3.3.3 0.0.0.0 area 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+!TO ENABLE THE NAT
+
+TASK#1:ENABLE THE NAT ON THE VPN0 interface
+ In vManage, Navigate to Configuration ? Templates ? Feature 
+edit the feature
+BE-VE-VPN0-INT-GE0
+
+Go to NAT TAB
+NAT:ON
+
+TASK#2:CREATE A ROUTE FROM YOUR VPN1 GOING TO the VPN0
+ In vManage, Navigate to Configuration ? Templates ? Feature 
+edit the feature
+BR-VE-VPN1
+
+IPV4 Route:
+prefix:global:0.0.0.0/0
+next-hop
+enable vpn:on
+
+task#3: enable the default information originate on your OSPF
+ In vManage, Navigate to Configuration ? Templates ? Feature 
+edit the feature
+BE-VE-OSPF-GE0/1
+Advance tab:
+Originate:on
+always:on
+
+task#4:verify
+go to network>vedge1>realtime>
+device options:ip nat filters
+!do not filter
+
+vpn0
+ge0/1
+icmp
