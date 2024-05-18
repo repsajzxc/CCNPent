@@ -1,0 +1,293 @@
+************************************************
+************************************************
+SITE1-R1:
+CONFIG T
+crypto isakmp policy 1 authentication pre-share
+crypto isakmp key cisco address 10.22.100.8
+
+!
+crypto ipsec transform-set strong esp-3des esp-sha-hmac
+!
+crypto map vpn 16 ipsec-isakmp set peer 10.22.100.8
+set transform-set strong match address 101
+!
+interface Tunnel1
+description vpn-GRE TUNNEL TO Partner 
+ip address 172.lM.hM.1 255.255.255.0
+tunnel source 10.21.100.8
+tunnel destination 10.22.100.8
+!
+interface serial 1/0
+ip address 200.0.0.1 255.255.255.0
+ip virtual-reassembly crypto map vpn
+no shut
+!
+interface fastE 0/0
+ip address 192.168.69.1 255.255.255.0
+no shut
+!
+router eigrp 100
+network 172.21.0.0
+network 192.168.69.0 no auto-summary
+!
+ip forward-protocol nd
+ip route 0.0.0.0 0.0.0.0 se 1/0
+!
+access-list 101 permit gre host 200.0.0.1 host 200.0.0.2
+!
+
+************************************************
+************************************************
+SITE1-R2:
+
+CONFIG T
+crypto isakmp policy 1 
+authentication pre-share
+crypto isakmp key cisco address 200.0.0.22
+
+crypto ipsec transform-set strong esp-3des esp-sha-hmac
+
+crypto map vpn 16 ipsec-isakmp 
+set peer 200.0.0.22
+set transform-set strong match address 102
+
+interface Tunnel1
+description vpn-GRE-TUNNEL-TO-r1 
+ip address 172.21.22.2 255.255.255.0
+tunnel source 200.0.0.21
+tunnel destination 200.0.0.22
+
+interface gi 0/0/1
+ip address 200.0.0.21 255.255.255.0
+ip virtual-reassembly crypto map vpn
+no shut
+
+interface gi 0/0/0
+ip address 10.21.21.1 255.255.255.0
+no shut
+
+router eigrp 100
+network 172.21.22.0
+network 200.0.0.0 
+no auto-summary
+
+ip forward-protocol nd
+ip route 0.0.0.0 0.0.0.0 200.0.0.1
+
+access-list 102 permit gre host 200.0.0.21 host 200.0.0.22
+
+
+************************************************
+************************************************
+
+pa:
+config t int fa 0/0
+ip add 192.168.69.11 255.255.255.0
+no shut exit
+ip route 0.0.0.0 0.0.0.0 192.168.69.1
+
+
+ws:
+config t int fa 0/0
+ip add 192.168.88.11 255.255.255.0
+no shut exit
+ip route 0.0.0.0 0.0.0.0 192.168.88.1
+
+
+**********************************************
+**********************************************
+**********************************************
+
+paste to all routers: enable
+
+no ip domain-lookup no logging console
+alias exec bp show ip int brief | ex una alias exec sr show ip route
+alias exec sp show ip protocols alias exec sn sh ip nat trans line cons 0
+no login
+exec-timeout 0 0
+line vty 0 14 no login
+  exec-timeout 0 0 end
+
+t1:
+config t int fa 0/0 no shut
+  ip add dhcp end
+********************* R1:
+config t
+int
+nofa 0/0
+shutipadd 192.168.1.11255.255.255.0intfa 0/1noshutipadd 192.168.11.1255.255.255.0
+p1:
+config t int fa 0/0 no shut
+ip add 192.168.11.10 255.255.255.0
+ip route 0.0.0.0 0.0.0.0 192.168.11.1
+
+***************
+***************
+
+R2:
+config t int fa 0/0 no shut
+ip add 192.168.1.12 255.255.255.0
+int fa 0/1 no shut
+ip add 192.168.12.1 255.255.255.0
+
+p2:
+
+int fa 0/0 no shut
+ip add 192.168.12.10 255.255.255.0
+ip route 0.0.0.0 0.0.0.0 192.168.12.1
+
+***************
+***************
+
+
+R3:
+config t int fa 0/0 no shut
+ip add 192.168.1.13 255.255.255.0
+int fa 0/1 no shut
+ip add 192.168.13.1 255.255.255.0
+
+p3:
+config t int fa 0/0 no shut
+ip add 192.168.13.10 255.255.255.0
+ip route 0.0.0.0 0.0.0.0 192.168.13.1
+
+***************
+***************
+
+R4:
+config t int fa 0/0 no shut
+ip add 192.168.1.14 255.255.255.0
+int fa 0/1 no shut
+ip add 192.168.14.1 255.255.255.0
+
+p4:
+config t int fa 0/0 no shut
+ip add 192.168.14.10 255.255.255.0
+ip route 0.0.0.0 0.0.0.0 192.168.14.1
+********* config t
+ip host p1 192.168.11.10 ip host p2 192.168.12.10 ip host p3 192.168.13.10 ip host p4 192.168.14.10 ip host 69 69.0.0.1
+
+
+*********************************
+********************************
+
+r1: internet share: config t
+int fa 0/0
+ ip nat outside int fa 0/1
+ip nat inside
+!
+no ip access-list extended NAT ip access-list extended NAT
+denyip192.168.11.00.0.0.255192.168.12.00.0.0.255denyip192.168.11.00.0.0.255192.168.13.00.0.0.255denyip192.168.11.00.0.0.255192.168.14.00.0.0.255deny eigrp any any permit ip any any exit
+route-map POLNAT 10 match ip address NAT exit
+ip nat inside source route-map POLNAT interface FastEthernet0/0 overload Router eigrp 100
+network 192.168.11.0
+network 192.168.1.0
+**************** R2:
+config t int fa 0/0
+ ip nat outside int fa 0/1
+ip nat inside
+!
+no ip access-list extended NAT ip access-list extended NAT
+denyip192.168.12.00.0.0.255192.168.11.00.0.0.255denyip192.168.12.00.0.0.255192.168.13.00.0.0.255denyip192.168.12.00.0.0.255192.168.14.00.0.0.255deny eigrp any any permit ip any any exit
+route-map POLNAT 10 match ip address NAT exit
+ip nat inside source route-map POLNAT interface FastEthernet0/0 overload Router eigrp 100
+network 192.168.12.0
+network 192.168.1.0
+
+************************
+************************
+************************
+
+STATIC ROUTES TO SIMULATE INTNERNET:
+
+internet:
+config t
+iproute192.168.11.0255.255.255.0192.168.1.11iproute192.168.12.0255.255.255.0192.168.1.12iproute192.168.13.0255.255.255.0192.168.1.13iproute192.168.14.0255.255.255.0192.168.1.14
+
+all config t
+ip route 0.0.0.0 0.0.0.0 192.168.1.1
+
+****************************************
+****************************************
+**************** R3:
+config t int fa 0/0
+ ip nat outside int fa 0/1
+ip nat inside
+!
+no ip access-list extended NAT ip access-list extended NAT
+denyip192.168.13.00.0.0.255192.168.11.00.0.0.255denyip192.168.13.00.0.0.255192.168.12.00.0.0.255denyip192.168.13.00.0.0.255192.168.14.00.0.0.255deny eigrp any any permit ip any any exit
+route-map POLNAT 10 match ip address NAT exit
+ip nat inside source route-map POLNAT interface FastEthernet0/0 overload Router eigrp 100
+network 192.168.13.0
+network 192.168.1.0
+
+
+************************
+************************
+************************
+
+
+R4:
+
+config t int fa 0/0
+ ip nat outside int fa 0/1
+ip nat inside
+!
+no ip access-list extended NAT ip access-list extended NAT
+denyip192.168.14.00.0.0.255192.168.11.00.0.0.255denyip192.168.14.00.0.0.255192.168.12.00.0.0.255denyip192.168.14.00.0.0.255192.168.13.00.0.0.255deny eigrp any any permit ip any any exit
+route-map POLNAT 10 match ip address NAT exit
+ip nat inside source route-map POLNAT interface FastEthernet0/0 overload Router eigrp 100
+network 192.168.14.0
+network 192.168.1.0
+
+
+*******************************************************
+*******************************************************
+*******************************************************
+*******************************************************
+
+SITE1-R1:HQ!
+CONFIG T
+crypto isakmp policy 1 authentication pre-share
+crypto isakmp key cisco address 192.168.1.12 crypto isakmp key cisco address 192.168.1.13 crypto isakmp key cisco address 192.168.1.14
+!
+crypto ipsec transform-set strong esp-3des esp-sha-hmac
+!
+crypto map vpn 16 ipsec-isakmp set peer 200.0.0.2
+set transform-set strong match address 101
+!
+interface Tunnel1
+description vpn-GRE TUNNEL TO r2 ip address 172.21.0.1 255.255.0.0
+tunnel source 200.0.0.1
+tunnel destination 200.0.0.2
+!
+interface serial 1/0
+ip address 200.0.0.1 255.255.255.0
+ip virtual-reassembly crypto map vpn
+
+no shut
+!
+interface fastE 0/0
+ip address 192.168.69.1 255.255.255.0
+no shut
+!
+router eigrp 100
+network 172.21.0.0
+network 192.168.69.0 no auto-summary
+!
+ip forward-protocol nd
+ip route 0.0.0.0 0.0.0.0 se 1/0
+!
+access-list 101 permit gre host 200.0.0.1 host 200.0.0.2
+
+
+
+
+
+
+
+
+
+
+
+
