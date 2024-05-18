@@ -1,0 +1,1 @@
+﻿Add-DnsServerPrimaryZone -Name "NGCP21.com" -ZoneFile "NGCP21.com.dns"

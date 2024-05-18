@@ -1,0 +1,36 @@
+conf t
+crypto isakmp policy 1
+  authentication pre-share
+  crypto isakmp key cisco address 200.0.0.31
+
+crypto ipsec transform-set strong esp-3des esp-sha-hmac
+
+crypto map vpn 16 ipsec-isakmp
+  set peer 200.0.0.31
+  set transform-set strong
+  match address 102
+
+access-list 102 permit gre host 200.0.0.32 host 200.0.0.31
+
+interface Tunnel1
+  description vpn-GRE-TUNNEL TO r1
+  ip address 172.31.32.2 255.255.255.0
+  tunnel source 200.0.0.32
+  tunnel destination 200.0.0.31
+
+interface GigabitEthernet 0/0/1
+  ip address 200.0.0.32 255.255.255.0
+  crypto map vpn
+  no shut
+
+interface GigabitEthernet 0/0/0
+  ip address 10.32.32.1 255.255.255.0
+  no shut
+
+router eigrp 100
+  network 172.31.32.0
+  network 200.0.0.0
+  no auto-summary
+
+ip forward-protocol nd
+ip route 0.0.0.0 0.0.0.0 200.0.0.1
